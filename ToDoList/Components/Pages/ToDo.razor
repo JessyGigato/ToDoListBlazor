@@ -1,0 +1,54 @@
+﻿@page "/todo"
+@rendermode InteractiveServer
+
+<PageTitle>ToDo List</PageTitle>
+<h3>ToDo List</h3>
+
+<h2 class="badge bg-primary position-relative">
+    Task
+    <span class="position-absolute top-0 start-110 translate-middle badge rounded-pill bg-danger">
+        @allItems.Count(todo=> todo.IsDone)
+    </span>
+</h2>
+
+<ul style="list-style-type:none; display: flex; flex-direction: column;">
+    @foreach (var todo in allItems)
+    {
+        <li style="display: flex; align-items: center;">
+            <label>
+                <input type="checkbox" @bind="todo.IsDone" />
+                @todo.Title
+            </label>
+            <button class="btn btn-outline-danger btn-sm" style="margin-left: 10px;" @onclick="() => RemoveTodo(todo)">
+                <i class="bi bi-trash" style="font-size: 0.7rem;"></i>
+            </button>
+        </li>
+    }
+</ul>
+
+<input placeholder="Task Name" @bind="newToDo"/>
+<button @onclick="AddToDo"> Add task</button>
+
+@code {
+    private string? newToDo;
+
+    private void AddToDo()
+    {
+        if (!string.IsNullOrWhiteSpace(newToDo))
+        {
+            allItems.Add(new TodoItem { Title = newToDo });
+            newToDo = string.Empty;
+        }
+    }
+    private List<TodoItem> allItems = new()
+    {
+        new TodoItem { Title="Edit Youtube video", IsDone = false},
+        new TodoItem { Title="Learn Blazor", IsDone = true},
+        new TodoItem { Title="Build ToDo App", IsDone = false}
+    };
+
+    private void RemoveTodo(TodoItem todo)
+    {
+        allItems.Remove(todo);
+    }
+}
